@@ -28,9 +28,13 @@ class Program
         IDestination destination;
         IEncoder encoder = GetEncoder(opts.EncodingType, availableEncoders);
 
-        if (encoder == null)
+        if (opts.ListEncoders || encoder == null)
         {
-            Console.WriteLine("Invalid encoding type specified.");
+            Console.WriteLine("Supported encoding types:");
+            foreach (var encoderOption in availableEncoders.Keys)
+            {
+                Console.WriteLine($"  {encoderOption}");
+            }
             return;
         }
 

@@ -11,6 +11,9 @@ public class Options
 
     [Option('e', "encodingType", Required = true, HelpText = "Encoding type.")]
     public string EncodingType { get; set; }
+
+    [Option('l', "listEncoders", Required = false, HelpText = "List all supported encoding types.")]
+    public bool ListEncoders { get; set; }
 }
 
 
