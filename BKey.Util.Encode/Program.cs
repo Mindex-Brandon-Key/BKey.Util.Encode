@@ -1,13 +1,12 @@
-﻿using System;
+﻿using BKey.Util.Encode.Destinations;
+using BKey.Util.Encode.Encodings;
+using BKey.Util.Encode.Sources;
+using CommandLine;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using BKey.Util.Encode.Destinations;
-using BKey.Util.Encode.Encodings;
-using BKey.Util.Encode.Sources;
-using CommandLine;
 
 namespace BKey.Util.Encode;
 
