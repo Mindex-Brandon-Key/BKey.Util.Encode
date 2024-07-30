@@ -1,63 +1,111 @@
 ﻿using BKey.Util.Encode.Destinations;
 using BKey.Util.Encode.Encodings;
 using BKey.Util.Encode.Sources;
-using CommandLine;
 using System;
 using System.Collections.Generic;
+using System.CommandLine;
+using System.CommandLine.NamingConventionBinder;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace BKey.Util.Encode;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
+    {
+
+        var rootCommand = new RootCommand("Encoder application");
+
+        var listCommand = new Command("list", "List all supported encoding types")
+            {
+                new Option<bool>(
+                    new[] { "-l", "--list" },
+                    "List all supported encoding types.")
+            };
+        listCommand.Handler = CommandHandler.Create(ListEncoders);
+
+        var encodeCommand = new Command("encode", "Process input with specified encoders")
+            {
+                new Option<string>(
+                    new[] { "--inputPath", "-i" },
+                    "Input file path."),
+                new Option<string>(
+                    new[] { "--outputPath", "-o" },
+                    "Output file path."),
+                new Option<string[]>(
+                    new[] { "--encodingTypes", "-e" },
+                    () => Array.Empty<string>(),
+                    "Comma-separated list of encoding types.")
+                    .FromAmong(GetAvailableEncoders().Keys.ToArray()),
+            };
+        encodeCommand.Handler = CommandHandler.Create<string, string, string[]>(RunOptionsAndReturnExitCode);
+
+        rootCommand.AddCommand(listCommand);
+        rootCommand.AddCommand(encodeCommand);
+
+        rootCommand.InvokeAsync(args).Wait();
+    }
+
+    static void RunOptionsAndReturnExitCode(string inputPath, string outputPath, string[] encodingTypes)
     {
         var availableEncoders = GetAvailableEncoders();
 
-        Parser.Default.ParseArguments<Options>(args)
-              .WithParsed<Options>(opts => RunOptionsAndReturnExitCode(opts, availableEncoders))
-              .WithNotParsed<Options>((errs) => HandleParseError(errs, availableEncoders));
-    }
-
-    static void RunOptionsAndReturnExitCode(Options opts, Dictionary<string, Type> availableEncoders)
-    {
-        ISource source;
-        IDestination destination;
-        IEncoder encoder = GetEncoder(opts.EncodingType, availableEncoders);
-
-        if (opts.ListEncoders || encoder == null)
+        if (encodingTypes == null || !encodingTypes.Any())
         {
-            Console.WriteLine("Supported encoding types:");
-            foreach (var encoderOption in availableEncoders.Keys)
-            {
-                Console.WriteLine($"  {encoderOption}");
-            }
+            Console.WriteLine("At least one encoding type is required. Use the 'list' command to see all supported encoding types.");
             return;
         }
 
-        if (!string.IsNullOrEmpty(opts.InputPath) && File.Exists(opts.InputPath))
+        ISource source;
+        IDestination destination;
+        var encoders = encodingTypes.Select(et => GetEncoder(et, availableEncoders)).ToList();
+
+        if (encoders.Any(e => e == null))
         {
-            source = new FileSource(opts.InputPath);
+            Console.WriteLine("One or more invalid encoding types specified.");
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(inputPath) && File.Exists(inputPath))
+        {
+            source = new FileSource(inputPath);
         }
         else
         {
             source = new StdinSource();
         }
 
-        if (!string.IsNullOrEmpty(opts.OutputPath))
+        if (!string.IsNullOrEmpty(outputPath))
         {
-            destination = new FileDestination(opts.OutputPath);
+            destination = new FileDestination(outputPath);
         }
         else
         {
             destination = new StdoutDestination();
         }
 
-        string input = source.Read();
-        string result = encoder.Process(input);
-        destination.Write(result);
+        try
+        {
+            string input = source.Read();
+            string result = input;
+            foreach (var encoder in encoders)
+            {
+                result = encoder.Process(result);
+            }
+            destination.Write(result);
+        }
+        catch (FormatException)
+        {
+            Console.WriteLine("Input is not a valid Base64 string.");
+        }
+        catch (JsonException)
+        {
+            Console.WriteLine("Input is not a valid JSON string.");
+        }
     }
 
     static IEncoder GetEncoder(string encodingType, Dictionary<string, Type> availableEncoders)
@@ -87,9 +135,11 @@ class Program
         return encoders;
     }
 
-    static void HandleParseError(IEnumerable<Error> errs, Dictionary<string, Type> availableEncoders)
+    static void ListEncoders()
     {
-        Console.WriteLine("Usage:");
+        var availableEncoders = GetAvailableEncoders();
+
+        Console.WriteLine("Supported encoding types:");
         foreach (var encoder in availableEncoders.Keys)
         {
             Console.WriteLine($"  {encoder}");
