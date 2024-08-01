@@ -83,7 +83,7 @@ class Program
 
         ISource source;
         IDestination destination;
-        var encoders = encodingTypes.Select(et => EncoderFactory.GetEncoder(et)).ToList();
+        var encoders = encodingTypes.Select(et => EncoderFactory.CreateEncoder(et)).ToList();
 
         if (encoders.Any(e => e == null))
         {

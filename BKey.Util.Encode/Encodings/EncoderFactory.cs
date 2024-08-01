@@ -9,7 +9,7 @@ internal class EncoderFactory : IEncoderFactory
     private Lazy<Dictionary<string, Type>> _availableEncoders = new Lazy<Dictionary<string, Type>>(GetAvailableEncoders);
     private Dictionary<string, Type> AvailableEncoders => _availableEncoders.Value;
 
-    public IEncoder? GetEncoder(string encodingType)
+    public IEncoder? CreateEncoder(string encodingType)
     {
         if (AvailableEncoders.TryGetValue(encodingType, out var encoderType))
         {

@@ -3,6 +3,6 @@
 namespace BKey.Util.Encode.Encodings;
 internal interface IEncoderFactory
 {
-    IEncoder? GetEncoder(string encodingType);
+    IEncoder? CreateEncoder(string encodingType);
     IEnumerable<string> ListEncoders();
 }
