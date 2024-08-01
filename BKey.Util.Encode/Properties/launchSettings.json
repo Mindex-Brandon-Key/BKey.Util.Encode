@@ -2,7 +2,7 @@
   "profiles": {
     "BKey.Util.Encode": {
       "commandName": "Project",
-      "commandLineArgs": "-e \"SqlDecode\""
+      "commandLineArgs": "encode -e JsonPrettify"
     }
   }
 }

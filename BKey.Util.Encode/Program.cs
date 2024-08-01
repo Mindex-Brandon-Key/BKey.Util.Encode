@@ -1,6 +1,7 @@
 ﻿using BKey.Util.Encode.Destinations;
 using BKey.Util.Encode.Encodings;
 using BKey.Util.Encode.Sources;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -8,6 +9,7 @@ using System.CommandLine.NamingConventionBinder;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -15,18 +17,22 @@ namespace BKey.Util.Encode;
 
 class Program
 {
-    static async Task Main(string[] args)
-    {
+    private IEncoderFactory EncoderFactory { get; }
 
+    public Program(IEncoderFactory encoderFactory)
+    {
+        EncoderFactory = encoderFactory;
+    }
+
+    public async Task Run(string[] args)
+    {
         var rootCommand = new RootCommand("Encoder application");
 
-        var listCommand = new Command("list", "List all supported encoding types")
-            {
-                new Option<bool>(
-                    new[] { "-l", "--list" },
-                    "List all supported encoding types.")
-            };
-        listCommand.Handler = CommandHandler.Create(ListEncoders);
+        var listCommand = new Command("list-encoders", "List all supported encoding types")
+        {
+            Handler = CommandHandler.Create(ListEncoders),
+        };
+        listCommand.AddAlias("list");
 
         var encodeCommand = new Command("encode", "Process input with specified encoders")
             {
@@ -40,19 +46,34 @@ class Program
                     new[] { "--encodingTypes", "-e" },
                     () => Array.Empty<string>(),
                     "Comma-separated list of encoding types.")
-                    .FromAmong(GetAvailableEncoders().Keys.ToArray()),
+                    .FromAmong(EncoderFactory.ListEncoders().ToArray()),
             };
         encodeCommand.Handler = CommandHandler.Create<string, string, string[]>(RunOptionsAndReturnExitCode);
 
         rootCommand.AddCommand(listCommand);
         rootCommand.AddCommand(encodeCommand);
 
-        rootCommand.InvokeAsync(args).Wait();
+        await rootCommand.InvokeAsync(args);
     }
 
-    static void RunOptionsAndReturnExitCode(string inputPath, string outputPath, string[] encodingTypes)
+    static async Task Main(string[] args)
     {
-        var availableEncoders = GetAvailableEncoders();
+
+        var serviceCollection = new ServiceCollection();
+        ConfigureServices(serviceCollection);
+
+        // Build the service provider
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+
+        // Resolve and run the app
+        var app = serviceProvider.GetService<Program>();
+        await app?.Run(args);
+
+       
+    }
+
+    public async Task RunOptionsAndReturnExitCode(string inputPath, string outputPath, string[] encodingTypes)
+    {
 
         if (encodingTypes == null || !encodingTypes.Any())
         {
@@ -62,7 +83,7 @@ class Program
 
         ISource source;
         IDestination destination;
-        var encoders = encodingTypes.Select(et => GetEncoder(et, availableEncoders)).ToList();
+        var encoders = encodingTypes.Select(et => EncoderFactory.GetEncoder(et)).ToList();
 
         if (encoders.Any(e => e == null))
         {
@@ -90,7 +111,7 @@ class Program
 
         try
         {
-            string input = source.Read();
+            string input = await source.Read();
             string result = input;
             foreach (var encoder in encoders)
             {
@@ -108,39 +129,19 @@ class Program
         }
     }
 
-    static IEncoder GetEncoder(string encodingType, Dictionary<string, Type> availableEncoders)
+    private static void ConfigureServices(IServiceCollection services)
     {
-        if (availableEncoders.TryGetValue(encodingType, out var encoderType))
-        {
-            return (IEncoder)Activator.CreateInstance(encoderType);
-        }
-        throw new ArgumentException($"Unsupported encoding type '{encoderType}'", nameof(encoderType));
+        // Register services here
+        services.AddSingleton<IEncoderFactory, EncoderFactory>();
+        services.AddTransient<Program>();
     }
 
-    static Dictionary<string, Type> GetAvailableEncoders()
+    public void ListEncoders()
     {
-        var encoderTypes = Assembly.GetExecutingAssembly().GetTypes()
-            .Where(t => typeof(IEncoder).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-            .ToArray();
-
-        var encoders = new Dictionary<string, Type>();
-
-        foreach (var type in encoderTypes)
-        {
-            var attribute = type.GetCustomAttribute<EncoderAttribute>();
-            var name = attribute != null ? attribute.Name : type.Name;
-            encoders[name] = type;
-        }
-
-        return encoders;
-    }
-
-    static void ListEncoders()
-    {
-        var availableEncoders = GetAvailableEncoders();
+        var availableEncoders = EncoderFactory.ListEncoders();
 
         Console.WriteLine("Supported encoding types:");
-        foreach (var encoder in availableEncoders.Keys)
+        foreach (var encoder in availableEncoders)
         {
             Console.WriteLine($"  {encoder}");
         }

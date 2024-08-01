@@ -1,82 +1,85 @@
 ﻿using System;
+using System.IO;
 using System.Text;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace BKey.Util.Encode.Sources;
 public class StdinSource : ISource
 {
-    private static Thread inputThread;
-    private static AutoResetEvent getInput, gotInput;
-    private static string? input;
 
     static StdinSource()
     {
-        getInput = new AutoResetEvent(false);
-        gotInput = new AutoResetEvent(false);
-        inputThread = new Thread(Reader);
-        inputThread.IsBackground = true;
-        inputThread.Start();
     }
 
-    private static void Reader()
+    public async Task<string> Read()
     {
-        while (true)
-        {
-            getInput.WaitOne();
-            input = Console.ReadLine();
-            gotInput.Set();
-        }
-    }
-
-    public static bool TryReadLine(out string? line, int timeout_ms = 500/*Timeout.Infinite*/)
-    {
-        getInput.Set();
-        bool success = gotInput.WaitOne(timeout_ms);
-        if (success)
-            line = input;
-        else
-            line = null;
-        return success;
-    }
-
-    public static string? ReadLine(int timeout_ms = 500/**Timeout.Infinite**/)
-    {
-        getInput.Set();
-        bool success = gotInput.WaitOne(timeout_ms);
-        if (success)
-            return input;
-        else
-            throw new TimeoutException("User did not provide input within the timelimit.");
-    }
-
-
-    public string Read()
-    {
+        // Check if there is already data on the console
         if (Console.IsInputRedirected)
         {
-            return Console.In.ReadToEnd();
+            using (var reader = new StreamReader(Console.OpenStandardInput(), Console.InputEncoding))
+            {
+                return await reader.ReadToEndAsync();
+            }
         }
         else
         {
+            Console.WriteLine("Please enter data, then press Ctrl+D to finish:");
+
             var inputBuilder = new StringBuilder();
+            var inputPosition = 0;
 
-            if (!TryReadLine(out var line))
+            while (true)
             {
-                Console.WriteLine("Enter Text:");
-                // Wait for initial data
-                line = ReadLine(Timeout.Infinite);
+                var keyInfo = Console.ReadKey(intercept: true);
+
+                if (keyInfo.Key == ConsoleKey.D && keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
+                {
+                    break;
+                }
+
+                switch (keyInfo.Key)
+                {
+                    case ConsoleKey.Backspace:
+                        if (inputPosition > 0)
+                        {
+                            inputBuilder.Remove(inputPosition - 1, 1);
+                            inputPosition--;
+                            Console.Write("\b \b");
+                        }
+                        break;
+                    case ConsoleKey.Delete:
+                        if (inputPosition < inputBuilder.Length)
+                        {
+                            inputBuilder.Remove(inputPosition, 1);
+                            Console.Write(" \b");
+                        }
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        if (inputPosition > 0)
+                        {
+                            inputPosition--;
+                            Console.Write("\b");
+                        }
+                        break;
+                    case ConsoleKey.RightArrow:
+                        if (inputPosition < inputBuilder.Length)
+                        {
+                            inputPosition++;
+                            Console.Write(keyInfo.KeyChar);
+                        }
+                        break;
+                    default:
+                        inputBuilder.Insert(inputPosition, keyInfo.KeyChar);
+                        inputPosition++;
+                        Console.Write(keyInfo.KeyChar);
+                        break;
+                }
             }
-
-            do
-            {
-                inputBuilder.AppendLine(line);
-            } while (TryReadLine(out line));
 
             Console.WriteLine();
 
             return inputBuilder.ToString();
         }
-
     }
 
 }

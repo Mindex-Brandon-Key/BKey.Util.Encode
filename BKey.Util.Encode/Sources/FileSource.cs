@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 
 namespace BKey.Util.Encode.Sources;
 public class FileSource : ISource
@@ -10,8 +11,8 @@ public class FileSource : ISource
         _filePath = filePath;
     }
 
-    public string Read()
+    public async Task<string> Read()
     {
-        return File.ReadAllText(_filePath);
+        return await File.ReadAllTextAsync(_filePath);
     }
 }

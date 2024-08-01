@@ -1,5 +1,7 @@
-﻿namespace BKey.Util.Encode.Sources;
+﻿using System.Threading.Tasks;
+
+namespace BKey.Util.Encode.Sources;
 internal interface ISource
 {
-    string Read();
+    Task<string> Read();
 }
