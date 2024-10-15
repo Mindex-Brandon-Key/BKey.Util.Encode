@@ -7,7 +7,8 @@ public class Base64Encode : IEncoder
 {
     public string Process(string input)
     {
-        byte[] data = Convert.FromBase64String(input);
-        return Encoding.UTF8.GetString(data);
+        var bytes = Encoding.UTF8.GetBytes(input);
+        var data = Convert.ToBase64String(bytes);
+        return data;
     }
 }
