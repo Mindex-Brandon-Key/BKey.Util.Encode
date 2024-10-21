@@ -27,7 +27,7 @@ public class EncodingController : ControllerBase
     }
 
     [HttpPost("{encodingName}")]
-    public IActionResult EncodeText(string encodingName, [FromBody] string text)
+    public IActionResult EncodeText(string encodingName, [FromForm] string text)
     {
         var encoder = EncoderFactory.CreateEncoder(encodingName);
         if (encoder is null)

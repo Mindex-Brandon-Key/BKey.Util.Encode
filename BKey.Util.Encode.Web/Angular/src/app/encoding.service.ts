@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -15,6 +15,8 @@ export class EncodingService {
   }
 
   encodeText(encodingName: string, text: string): Observable<string> {
-    return this.http.post<string>(`${this.baseUrl}/${encodingName}`, text);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    const body = new HttpParams().set('text', text);
+    return this.http.post<string>(`${this.baseUrl}/${encodingName}`, body.toString(), { headers });
   }
 }
