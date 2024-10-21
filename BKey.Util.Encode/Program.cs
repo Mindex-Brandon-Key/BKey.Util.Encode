@@ -132,7 +132,7 @@ class Program
     private static void ConfigureServices(IServiceCollection services)
     {
         // Register services here
-        services.AddSingleton<IEncoderFactory, EncoderFactory>();
+        services.AddEncodings();
         services.AddTransient<Program>();
     }
 

@@ -1,5 +1,5 @@
 ﻿namespace BKey.Util.Encode.Encodings;
-internal interface IEncoder
+public interface IEncoder
 {
     string Process(string input);
 }

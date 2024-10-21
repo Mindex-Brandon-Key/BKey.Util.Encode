@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <Target Name="BuildAngular" AfterTargets="Build">
+    <Exec Command="npm install" WorkingDirectory="$(ProjectDir)Angular" />
+    <Exec Command="npm run build --prod" WorkingDirectory="$(ProjectDir)Angular" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BKey.Util.Encode.Web.Api\BKey.Util.Encode.Web.Api.csproj" />
+    <ProjectReference Include="..\BKey.Util.Encode\BKey.Util.Encode.csproj" />
+  </ItemGroup>
+
+</Project>

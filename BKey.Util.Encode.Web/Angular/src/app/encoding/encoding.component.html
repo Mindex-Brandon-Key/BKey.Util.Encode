@@ -1,0 +1,12 @@
+<div>
+  <input type="text" [(ngModel)]="inputText" placeholder="Enter text" />
+  <select [(ngModel)]="selectedEncoding">
+    <option *ngFor="let encoding of encodings" [value]="encoding">
+      {{ encoding }}
+    </option>
+  </select>
+  <button (click)="onEncode()">Encode</button>
+  <div>
+    <strong>Result:</strong> {{ resultText }}
+  </div>
+</div>

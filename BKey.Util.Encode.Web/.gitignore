@@ -1,0 +1,55 @@
+# ASP.NET Core
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vspxproj.user
+appsettings*.json
+!appsettings.json
+
+# DotNet dependencies
+packages/
+*.nupkg
+*.snupkg
+
+# Visual Studio
+.vscode/
+.vs/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Build artifacts
+wwwroot/dist/
+wwwroot/encoding-ui/
+wwwroot/lib/
+
+# Angular specific
+Angular/node_modules/
+dist/
+build/
+
+# Angular environment
+src/environments/
+
+# IDE specific
+.idea/
+.DS_Store
+Thumbs.db
+*.iml
+
+# Coverage and test results
+coverage/
+*.coverage
+*.coveragexml
+*.testresults
+TestResults/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
