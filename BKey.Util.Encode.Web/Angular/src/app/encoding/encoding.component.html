@@ -1,12 +1,17 @@
-<div>
-  <input type="text" [(ngModel)]="inputText" placeholder="Enter text" />
-  <select [(ngModel)]="selectedEncoding">
-    <option *ngFor="let encoding of encodings" [value]="encoding">
-      {{ encoding }}
-    </option>
-  </select>
-  <button (click)="onEncode()">Encode</button>
-  <div>
-    <strong>Result:</strong> {{ resultText }}
+<div class="container">
+  <div class="input-column">
+    <textarea [(ngModel)]="inputText" placeholder="Enter text" class="input-box"></textarea>
+  </div>
+  <div class="middle-column">
+    <label for="encoding-dropdown" class="dropdown-label">Select Encoding:</label>
+    <select id="encoding-dropdown" [(ngModel)]="selectedEncoding" class="dropdown">
+      <option *ngFor="let encoding of encodings" [value]="encoding">
+        {{ encoding }}
+      </option>
+    </select>
+    <button (click)="onEncode()" class="encode-button">Encode</button>
+  </div>
+  <div class="output-column">
+    <textarea [value]="resultText" readonly class="output-box"></textarea>
   </div>
 </div>
