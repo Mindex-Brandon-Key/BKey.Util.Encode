@@ -6,7 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <Target Name="BuildAngular" AfterTargets="Build">
+  <Target Name="BuildAngular-Dev" AfterTargets="Build" Condition="'$(Configuration)'=='Debug'">
+    <Exec Command="npm install" WorkingDirectory="$(ProjectDir)Angular" />
+    <Exec Command="npm run build -- --configuration development --verbose" WorkingDirectory="$(ProjectDir)Angular" />
+  </Target>
+
+  <Target Name="BuildAngular-Prod" AfterTargets="Build" Condition="'$(Configuration)'=='Release'">
     <Exec Command="npm install" WorkingDirectory="$(ProjectDir)Angular" />
     <Exec Command="npm run build --prod" WorkingDirectory="$(ProjectDir)Angular" />
   </Target>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EncodingService } from '../encoding.service';
+import { EncodingService } from './encoding.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -15,6 +15,7 @@ export class EncodingComponent implements OnInit {
   selectedEncoding: string = '';
   inputText: string = '';
   resultText: string = '';
+  showCopyAlert: boolean = false;
 
   constructor(private encodingService: EncodingService) {}
 
@@ -42,7 +43,10 @@ export class EncodingComponent implements OnInit {
   copyToClipboard(): void {
     navigator.clipboard.writeText(this.resultText).then(
       () => {
-        console.log('Copied to clipboard');
+        this.showCopyAlert = true;
+        setTimeout(() => {
+          this.showCopyAlert = false;
+        }, 2000);
       },
       (err) => {
         console.error('Could not copy text: ', err);

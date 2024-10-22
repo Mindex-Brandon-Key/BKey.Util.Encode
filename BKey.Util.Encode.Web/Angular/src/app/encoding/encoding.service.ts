@@ -15,8 +15,13 @@ export class EncodingService {
   }
 
   encodeText(encodingName: string, text: string): Observable<string> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    const headers = new HttpHeaders(
+      {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'text/plain'
+      });
     const body = new HttpParams().set('text', text);
-    return this.http.post<string>(`${this.baseUrl}/${encodingName}`, body.toString(), { headers });
+    const path = `${this.baseUrl}/${encodingName}`
+    return this.http.post(path, body.toString(), { headers, responseType: 'text' });
   }
 }

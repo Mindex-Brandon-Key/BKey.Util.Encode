@@ -84,3 +84,15 @@
     width: 20px;
     height: 20px;
   }
+
+.copy-alert {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #4caf50;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  opacity: 0.9;
+}
