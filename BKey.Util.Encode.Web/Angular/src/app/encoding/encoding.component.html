@@ -1,6 +1,9 @@
-<div class="container">
+<div class="encoding-container">
   <div class="input-column">
-    <textarea [(ngModel)]="inputText" placeholder="Enter text" class="input-box"></textarea>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Input</mat-label>
+      <textarea matInput [(ngModel)]="inputText" placeholder="Enter text" class="text-area"></textarea>
+    </mat-form-field>
   </div>
   <div class="middle-column">
     <mat-form-field>
@@ -12,16 +15,15 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    
-    <button mat-raised-button (click)="onEncode()" class="encode-button">Encode</button>
+    <button mat-raised-button color="primary" (click)="onEncode()" class="encode-button">Encode</button>
   </div>
   <div class="output-column">
-    <div class="output-container">
-      <textarea [value]="resultText" readonly class="output-box"></textarea>
-      <button mat-icon-button (click)="copyToClipboard()" class="copy-button" title="Copy to clipboard">
-          <mat-icon>content_copy</mat-icon>
-      </button>
-      <div *ngIf="showCopyAlert" class="copy-alert">Copied to clipboard!</div>
-    </div>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Output</mat-label>
+      <textarea matInput [value]="resultText" readonly class="text-area"></textarea>
+    </mat-form-field>
+    <button mat-icon-button (click)="copyToClipboard()" class="copy-button" title="Copy to clipboard">
+      <mat-icon>content_copy</mat-icon>
+    </button>
   </div>
 </div>

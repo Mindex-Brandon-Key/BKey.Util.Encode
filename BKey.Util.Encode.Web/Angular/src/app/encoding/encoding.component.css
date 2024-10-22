@@ -1,126 +1,55 @@
-.input-box.light-mode {
-  background-color: var(--input-background-light);
-  color: var(--text-color-light);
-  border: 1px solid #ccc;
-}
-
-.input-box.dark-mode {
-  background-color: var(--input-background-dark);
-  color: var(--text-color-dark);
-  border: 1px solid #777;
-}
-
-.dropdown.light-mode,
-.encode-button.light-mode {
-  background-color: var(--button-background-light);
-  color: var(--button-text-light);
-}
-
-.dropdown.dark-mode,
-.encode-button.dark-mode {
-  background-color: var(--button-background-dark);
-  color: var(--button-text-dark);
-}
-
-.container {
+.encoding-container {
   display: flex;
-  width: 100%;
-  height: 100vh;
+  flex-direction: row;
+  height: 100%;
+  padding: 16px;
   box-sizing: border-box;
-  padding: 20px;
-  gap: 20px;
 }
 
-.input-column {
+.input-column, .middle-column, .output-column {
   flex: 1;
   display: flex;
-  justify-content: stretch;
-  align-items: stretch;
+  flex-direction: column;
+  padding: 8px;
 }
 
-.input-box {
+.full-width {
   width: 100%;
-  height: 100%;
-  padding: 10px;
-  font-size: 16px;
-  resize: none;
 }
 
 .middle-column {
-  flex: 0.5;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
 }
 
-.dropdown-label {
-  font-size: 16px;
-  margin-bottom: 10px;
+.middle-column mat-form-field {
+  width: 75%;
+  height: auto;
 }
 
-.dropdown {
-  padding: 10px;
-  font-size: 16px;
-  width: 100%;
-}
-
-.encode-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
+.middle-column .mat-mdc-form-field-infix {
+  width: auto;
 }
 
 .output-column {
-  flex: 1;
-  display: flex;
-  justify-content: stretch;
-  align-items: stretch;
-}
-
-.output-container {
   position: relative;
-  width: 100%;
-  height: 100%;
 }
 
-.output-box {
-  width: 100%;
-  height: 100%;
-  padding: 10px;
-  font-size: 16px;
-  background-color: var(--input-background-light);
-  border: 1px solid #ccc;
+.encode-button {
+  margin-top: 16px;
 }
-
-  .output-box.dark-mode {
-    background-color: var(--input-background-dark);
-    border: 1px solid #777;
-  }
 
 .copy-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
+  top: 8px;
+  right: 8px;
 }
 
-  .copy-button img {
-    width: 20px;
-    height: 20px;
-  }
+mat-form-field {
+  height: 100%;
+}
 
-.copy-alert {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: #4caf50;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 14px;
-  opacity: 0.9;
+.text-area {
+  min-height: 200px;
+  resize: none;
 }
