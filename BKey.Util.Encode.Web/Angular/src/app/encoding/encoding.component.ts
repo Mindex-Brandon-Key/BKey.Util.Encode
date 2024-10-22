@@ -1,14 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2, RendererFactory2 } from '@angular/core';
 import { EncodingService } from './encoding.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+
 
 @Component({
   selector: 'app-encoding',
   templateUrl: './encoding.component.html',
   styleUrls: ['./encoding.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatIconModule
+  ]
 })
 export class EncodingComponent implements OnInit {
   encodings: string[] = [];
@@ -16,13 +26,21 @@ export class EncodingComponent implements OnInit {
   inputText: string = '';
   resultText: string = '';
   showCopyAlert: boolean = false;
+  themeClass = 'light-mode';
+  private renderer: Renderer2;
 
-  constructor(private encodingService: EncodingService) {}
+  constructor(private encodingService: EncodingService, private rendererFactory: RendererFactory2) {
+    this.renderer = rendererFactory.createRenderer(null, null);
+    this.detectTheme();
+  }
 
   ngOnInit(): void {
     this.encodingService.getSupportedEncodings().subscribe(
       (data) => {
         this.encodings = data;
+      },
+      (error) => {
+        console.error('Error fetching encodings:', error);
       }
     );
   }
@@ -52,6 +70,19 @@ export class EncodingComponent implements OnInit {
         console.error('Could not copy text: ', err);
       }
     );
+  }
+
+  detectTheme(): void {
+    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+    if (prefersDarkScheme.matches) {
+      this.themeClass = 'dark-mode';
+    } else {
+      this.themeClass = 'light-mode';
+    }
+
+    prefersDarkScheme.addEventListener('change', (e) => {
+      this.themeClass = e.matches ? 'dark-mode' : 'light-mode';
+    });
   }
 
 }
