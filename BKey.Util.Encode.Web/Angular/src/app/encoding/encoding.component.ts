@@ -38,4 +38,16 @@ export class EncodingComponent implements OnInit {
       );
     }
   }
+
+  copyToClipboard(): void {
+    navigator.clipboard.writeText(this.resultText).then(
+      () => {
+        console.log('Copied to clipboard');
+      },
+      (err) => {
+        console.error('Could not copy text: ', err);
+      }
+    );
+  }
+
 }

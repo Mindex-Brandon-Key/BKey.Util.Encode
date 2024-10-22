@@ -32,6 +32,13 @@ public class Program
             RequestPath = ""
         });
 
+        // Serve assets like images from wwwroot/assets
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "assets")),
+            RequestPath = "/assets"
+        });
+
         app.UseRouting();
 
         //app.UseAuthorization();

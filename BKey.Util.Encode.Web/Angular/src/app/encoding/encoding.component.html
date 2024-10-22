@@ -12,6 +12,11 @@
     <button (click)="onEncode()" class="encode-button">Encode</button>
   </div>
   <div class="output-column">
-    <textarea [value]="resultText" readonly class="output-box"></textarea>
+    <div class="output-container">
+      <textarea [value]="resultText" readonly class="output-box"></textarea>
+      <button (click)="copyToClipboard()" class="copy-button" title="Copy to clipboard">
+        <img src="/assets/copy.svg" alt="Copy icon" />
+      </button>
+    </div>
   </div>
 </div>
