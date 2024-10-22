@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, RendererFactory2 } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { EncodingService } from './encoding.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -26,23 +26,25 @@ export class EncodingComponent implements OnInit {
   inputText: string = '';
   resultText: string = '';
   showCopyAlert: boolean = false;
-  themeClass = 'light-mode';
-  private renderer: Renderer2;
 
-  constructor(private encodingService: EncodingService, private rendererFactory: RendererFactory2) {
-    this.renderer = rendererFactory.createRenderer(null, null);
-    this.detectTheme();
+  constructor(private encodingService: EncodingService) {
   }
 
-  ngOnInit(): void {
-    this.encodingService.getSupportedEncodings().subscribe(
-      (data) => {
-        this.encodings = data;
-      },
-      (error) => {
-        console.error('Error fetching encodings:', error);
-      }
-    );
+  ngOnInit() {
+    this.encodingService.getSupportedEncodings()
+      .subscribe(
+        (encodings) => {
+          this.encodings = encodings;
+          if (this.encodings.length === 0) {
+            this.selectedEncoding = 'No Encodings Available';
+          }
+        },
+        (error) => {
+          console.error('Failed to fetch supported encodings:', error);
+          this.encodings = [];
+          this.selectedEncoding = 'No Encodings Available';
+        }
+      );
   }
 
   onEncode(): void {
@@ -70,19 +72,6 @@ export class EncodingComponent implements OnInit {
         console.error('Could not copy text: ', err);
       }
     );
-  }
-
-  detectTheme(): void {
-    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-    if (prefersDarkScheme.matches) {
-      this.themeClass = 'dark-mode';
-    } else {
-      this.themeClass = 'light-mode';
-    }
-
-    prefersDarkScheme.addEventListener('change', (e) => {
-      this.themeClass = e.matches ? 'dark-mode' : 'light-mode';
-    });
   }
 
 }

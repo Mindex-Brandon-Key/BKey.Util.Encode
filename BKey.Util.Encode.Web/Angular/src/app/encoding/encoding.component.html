@@ -1,12 +1,18 @@
-<div class="container" [ngClass]="themeClass">
+<div class="container">
   <div class="input-column">
     <textarea [(ngModel)]="inputText" placeholder="Enter text" class="input-box"></textarea>
   </div>
   <div class="middle-column">
-    <label for="encoding-dropdown" class="dropdown-label">Select Encoding:</label>
-    <mat-select id="encoding-dropdown" [(ngModel)]="selectedEncoding" class="dropdown">
-      <mat-option *ngFor="let encoding of encodings" [value]="encoding">{{ encoding }}</mat-option>
-    </mat-select>
+    <mat-form-field>
+      <mat-label>Select Encoding</mat-label>
+      <mat-select [(ngModel)]="selectedEncoding" [disabled]="encodings.length === 0">
+        <mat-option *ngIf="encodings.length === 0" value="No Encodings Available">No Encodings Available</mat-option>
+        <mat-option *ngFor="let encoding of encodings" [value]="encoding">
+          {{encoding}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    
     <button mat-raised-button (click)="onEncode()" class="encode-button">Encode</button>
   </div>
   <div class="output-column">

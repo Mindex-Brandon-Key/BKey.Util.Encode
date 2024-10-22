@@ -1,26 +1,3 @@
-:root {
-  --background-color-light: #ffffff;
-  --background-color-dark: #333333;
-  --text-color-light: #000000;
-  --text-color-dark: #ffffff;
-  --input-background-light: #ffffff;
-  --input-background-dark: #555555;
-  --button-background-light: #e0e0e0;
-  --button-background-dark: #444444;
-  --button-text-light: #000000;
-  --button-text-dark: #ffffff;
-}
-
-.container.light-mode {
-  background-color: var(--background-color-light);
-  color: var(--text-color-light);
-}
-
-.container.dark-mode {
-  background-color: var(--background-color-dark);
-  color: var(--text-color-dark);
-}
-
 .input-box.light-mode {
   background-color: var(--input-background-light);
   color: var(--text-color-light);
