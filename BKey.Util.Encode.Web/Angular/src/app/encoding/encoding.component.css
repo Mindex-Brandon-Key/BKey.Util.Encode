@@ -1,0 +1,55 @@
+.encoding-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.input-column, .middle-column, .output-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.middle-column {
+  align-items: center;
+  justify-content: center;
+}
+
+.middle-column mat-form-field {
+  width: 75%;
+  height: auto;
+}
+
+.middle-column .mat-mdc-form-field-infix {
+  width: auto;
+}
+
+.output-column {
+  position: relative;
+}
+
+.encode-button {
+  margin-top: 16px;
+}
+
+.copy-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+mat-form-field {
+  height: 100%;
+}
+
+.text-area {
+  min-height: 200px;
+  resize: none;
+}
