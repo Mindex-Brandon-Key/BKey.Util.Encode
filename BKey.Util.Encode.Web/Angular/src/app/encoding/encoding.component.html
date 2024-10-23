@@ -15,15 +15,20 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-raised-button color="primary" (click)="onEncode()" class="encode-button">Encode</button>
+    <button mat-raised-button color="primary" (click)="onEncode()" class="encode-button" [disabled]="encodings.length === 0" [ngClass]="{'disabled-button': encodings.length === 0}">Encode</button>
   </div>
   <div class="output-column">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Output</mat-label>
       <textarea matInput [value]="resultText" readonly class="text-area"></textarea>
     </mat-form-field>
-    <button mat-icon-button (click)="copyToClipboard()" class="copy-button" title="Copy to clipboard">
+    <button mat-icon-button 
+        (click)="copyToClipboard()" 
+        class="copy-button" 
+        title="Copy to clipboard"
+        [disabled]="!resultText || resultText.length === 0">
       <mat-icon>{{ showCopyAlert ? 'check' : 'content_copy' }}</mat-icon>
     </button>
+
   </div>
 </div>
