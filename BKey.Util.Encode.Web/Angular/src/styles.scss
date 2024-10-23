@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+// Import the prebuilt theme
+@import '@angular/material/prebuilt-themes/magenta-violet.css';
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// Ensure the mat-app-background class covers the entire viewport
+.mat-app-background {
+  min-height: 100vh;
+}
