@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +13,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BKey.Util.Encode\BKey.Util.Encode.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<TargetPath>$(ProjectName)-appsettings.Development.json</TargetPath>
+    </Content>
+    <Content Update="appsettings.json">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<TargetPath>$(ProjectName)-appsettings.json</TargetPath>
+    </Content>
   </ItemGroup>
 
 </Project>

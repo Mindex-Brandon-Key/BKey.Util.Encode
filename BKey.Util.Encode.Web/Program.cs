@@ -1,11 +1,12 @@
 
 using Microsoft.Extensions.FileProviders;
+using System.Diagnostics;
 
 namespace BKey.Util.Encode.Web;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +65,62 @@ public class Program
             }
         });
 
-        app.Run();
+        var appTask = app.RunAsync();
+
+        if (app.Environment.IsProduction())
+        {
+            // Open the default browser to the application's URL
+            string url = "http://localhost:5000/index.html"; // Replace with the appropriate URL
+            await WaitForServerToBeAvailableAsync(url);
+            OpenBrowser(url);
+        }
+
+        await appTask;
+    }
+
+    private static async Task WaitForServerToBeAvailableAsync(string url)
+    {
+        using var client = new HttpClient();
+        int retries = 10;
+        int delayMilliseconds = 500;
+
+        for (int i = 0; i < retries; i++)
+        {
+            try
+            {
+                var response = await client.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    return; // Server is ready
+                }
+            }
+            catch
+            {
+                // Ignore exceptions (server is not ready yet)
+            }
+
+            await Task.Delay(delayMilliseconds); // Wait before retrying
+        }
+
+        // Optionally handle the case where the server didn't start in time
+        Console.WriteLine("Warning: Server did not start in the expected time.");
+    }
+
+    private static void OpenBrowser(string url)
+    {
+        try
+        {
+            // Open URL in default browser
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            // Log or handle exception if needed
+            Console.WriteLine($"Could not open browser: {ex.Message}");
+        }
     }
 }
