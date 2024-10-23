@@ -22,7 +22,9 @@ public class EncodingController : ControllerBase
     [HttpGet]
     public IActionResult GetSupportedEncodings()
     {
-        var encodings = EncoderFactory.ListEncoders();
+        var encodings = EncoderFactory.ListEncoders()
+            .OrderBy(x => x)
+            .ToList();
         return Ok(encodings);
     }
 
