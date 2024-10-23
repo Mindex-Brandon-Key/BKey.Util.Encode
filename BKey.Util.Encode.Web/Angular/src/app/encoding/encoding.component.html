@@ -23,7 +23,7 @@
       <textarea matInput [value]="resultText" readonly class="text-area"></textarea>
     </mat-form-field>
     <button mat-icon-button (click)="copyToClipboard()" class="copy-button" title="Copy to clipboard">
-      <mat-icon>content_copy</mat-icon>
+      <mat-icon>{{ showCopyAlert ? 'check' : 'content_copy' }}</mat-icon>
     </button>
   </div>
 </div>
